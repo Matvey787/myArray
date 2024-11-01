@@ -2,19 +2,19 @@ digraph
 {
 rankdir=LR;
 node000 [shape=Mrecord label= " 000 | data = -666 | <n0_n> next = 0 | <n0_p> prev = 0 " ];
-node001 [shape=Mrecord label= " 001 | data = -666 | <n1_n> next = 2 | <n1_p> prev = 0 " ];
-node002 [shape=Mrecord label= " 002 | data = -666 | <n2_n> next = 7 | <n2_p> prev = 0 " ];
-node003 [shape=Mrecord label= " 003 | data = -666 | <n3_n> next = 4 | <n3_p> prev = 7 " ];
-node004 [shape=Mrecord label= " 004 | data = 40 | <n4_n> next = 5 | <n4_p> prev = 7 " ];
+node001 [shape=Mrecord label= " 001 | data = 11.5 | <n1_n> next = 3 | <n1_p> prev = 2 " ];
+node002 [shape=Mrecord label= " 002 | data = 20 | <n2_n> next = 1 | <n2_p> prev = 0 " ];
+node003 [shape=Mrecord label= " 003 | data = 30 | <n3_n> next = 4 | <n3_p> prev = 1 " ];
+node004 [shape=Mrecord label= " 004 | data = 40 | <n4_n> next = 5 | <n4_p> prev = 3 " ];
 node005 [shape=Mrecord label= " 005 | data = 50 | <n5_n> next = 6 | <n5_p> prev = 4 " ];
 node006 [shape=Mrecord label= " 006 | data = 60 | <n6_n> next = 0 | <n6_p> prev = 5 " ];
-node007 [shape=Mrecord label= " 007 | data = 11.5 | <n7_n> next = 4 | <n7_p> prev = 0 " ];
+node007 [shape=Mrecord label= " 007 | data = -666 | <n7_n> next = 0 | <n7_p> prev = 0 " ];
 node008 [shape=Mrecord label= " 008 | data = -666 | <n8_n> next = 0 | <n8_p> prev = 0 " ];
 node009 [shape=Mrecord label= " 009 | data = -666 | <n9_n> next = 0 | <n9_p> prev = 0 " ];
 
-info [shape=Mrecord label= " Info | freeCell: 3 | <info_h> HEAD: 6 | <info_t> TAIL: 4 " ];
+info [shape=Mrecord label= " Info | freeCell: 9 | <info_h> HEAD: 6 | <info_t> TAIL: 2 " ];
 info:<info_h> -> node006 [ color = green; ]
-info:<info_t> -> node004 [ color = green; ]
+info:<info_t> -> node002 [ color = green; ]
 
 node000 -> node001 [ weight = 1000; color = white; ]
 node001 -> node002 [ weight = 1000; color = white; ]
@@ -26,13 +26,17 @@ node006 -> node007 [ weight = 1000; color = white; ]
 node007 -> node008 [ weight = 1000; color = white; ]
 node008 -> node009 [ weight = 1000; color = white; ]
 
-node004:<n4_p> -> node007:<n7_p> [ color = blue; ]
+node001:<n1_p> -> node002:<n2_p> [ color = blue; ]
+node002:<n2_p> -> node000:<n0_p> [ color = blue; ]
+node003:<n3_p> -> node001:<n1_p> [ color = blue; ]
+node004:<n4_p> -> node003:<n3_p> [ color = blue; ]
 node005:<n5_p> -> node004:<n4_p> [ color = blue; ]
 node006:<n6_p> -> node005:<n5_p> [ color = blue; ]
-node007:<n7_p> -> node000:<n0_p> [ color = blue; ]
 
+node001:<n1_n> -> node003:<n3_n> [ color = red; ]
+node002:<n2_n> -> node001:<n1_n> [ color = red; ]
+node003:<n3_n> -> node004:<n4_n> [ color = red; ]
 node004:<n4_n> -> node005:<n5_n> [ color = red; ]
 node005:<n5_n> -> node006:<n6_n> [ color = red; ]
 node006:<n6_n> -> node000:<n0_n> [ color = red; ]
-node007:<n7_n> -> node004:<n4_n> [ color = red; ]
 }
