@@ -21,26 +21,22 @@ int main(){
     stack_t freeCells;
     MACRO_stackInit(&freeCells);
 
-    data_t data = {(elem_t*)calloc(c_arrSize, sizeof(elem_t)), &freeCells, c_arrSize, 0, 100};
+    data_t data = {(elem_t*)calloc(c_arrSize, sizeof(elem_t)), &freeCells, c_arrSize, numOfElem, 0, 100};
+    //printf("%d", data.usedCells);
+    for (size_t i = 0; i < data.length; i++){
 
-    for (size_t i = 1; i < data.length; i++){
-        if (i < numOfElem){
-            data.array[i].value = (double)(i * 10);
-            data.array[i].next = i == numOfElem-1 ? 0 : i + 1;
-            data.array[i].prev = i == 1 ? 0 : i - 1;
-        } else {
-            data.array[i].value = c_poisonNum;
+        data.array[i].value = (i < numOfElem) ? (double)(i * 10) : c_poisonNum;
+        data.array[i].next = i < (numOfElem-1) ? i + 1 : 0;
+        data.array[i].prev = (i > 0) ? i - 1 : numOfElem - 1;
+        
+        if (i >= numOfElem)
             stackPush(data.freeCells, (double)i);
-        }
     }
-    data.array[0].value = -666;
-    data.array[0].next = 0;
-    data.array[0].prev = 0;
 
     writeData(&data, "tree.dot", numOfCall++);
-    delElem(&data, 1);
+    insElem(&data, 7, 20.5);
     writeData(&data, "tree.dot", numOfCall++);
-    insElem(&data, 3, 11.5);
+    insElem(&data, 8, 20.5);
     writeData(&data, "tree.dot", numOfCall++);
 
     writeHtmlFile("trees.html", numOfCall);

@@ -15,6 +15,7 @@ struct data_t
     elem_t* array;
     stack_t* freeCells;
     size_t length;
+    size_t usedCells;
     size_t head;
     size_t tail;
 };

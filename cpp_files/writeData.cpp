@@ -10,17 +10,22 @@
 
 void writeData(data_t* data, const char* fileName, int numOfCall){
     FILE* wFile = fopen(fileName, "wb");
-    fprintf(wFile, "digraph\n{\nrankdir=LR;\n");
+    fprintf(wFile, "digraph\n{ \n\
+                    rankdir=LR; \n\
+                    overlap=false; \n\
+                    splines=true; \n\
+                    nodesep=0.75; \n\
+                    ranksep=0.5;\n");
     data->head = 0;
     data->tail = 100;
     size_t freeCell = (size_t)stackPop(data->freeCells);
 
     for (size_t i = 0; i < data->length; i++){
-        printf("%lu %lu %lg\n", data->tail, i+1, data->array[i].value);
+        //printf("%lu %lu %lg\n", data->tail, i+1, data->array[i].value);
         if ((data->array[i].value - c_poisonNum) > c_compareZero)
             {
                 if (data->array[i].next == 0)
-                data->head = MAX(data->head, i);
+                    data->head = MAX(data->head, i);
 
                 if (data->array[i].prev == 0)
                     data->tail = MIN(data->tail, i);
@@ -30,6 +35,7 @@ void writeData(data_t* data, const char* fileName, int numOfCall){
 
         //printf("%lg %lu %lu\n", data->array[i].value, data->array[i].next, data->array[i].prev); 
     }
+    
     fprintf(wFile, "\n");
     fprintf(wFile, "info [shape=Mrecord label= \" Info | freeCell: %lu | <info_h> HEAD: %lu | <info_t> TAIL: %lu \" ];\n",
             freeCell, data->head, data->tail);
@@ -39,23 +45,23 @@ void writeData(data_t* data, const char* fileName, int numOfCall){
 
     fprintf(wFile, "\n");
     for (size_t i = 0; i < data->length - 1; i++){
-        fprintf(wFile, "node00%lu -> node00%lu [ weight = 1000; color = white; ]\n", i, i+1);
+        fprintf(wFile, "node00%lu -> node00%lu [ weight = 10; color = white; ]\n", i, i+1);
     }
 
     fprintf(wFile, "\n");
     for (size_t i = 0; i < data->length; i++){
         if ((data->array[i].value - c_poisonNum) > c_compareZero)
-            fprintf(wFile, "node00%lu:<n%lu_p> -> node00%lu:<n%lu_p> [ color = blue; ]\n", i, i, data->array[i].prev, data->array[i].prev);
+            fprintf(wFile, "node00%lu:<n%lu_p>:w -> node00%lu:<n%lu_p>:s [ color = blue; minlen=2; constraint=false; ]\n", i, i, data->array[i].prev, data->array[i].prev);
     }
 
     fprintf(wFile, "\n");
     for (size_t i = 0; i < data->length; i++){
         if ((data->array[i].value - c_poisonNum) > c_compareZero)
-            fprintf(wFile, "node00%lu:<n%lu_n> -> node00%lu:<n%lu_n> [ color = red; ]\n", i, i, data->array[i].next, data->array[i].next);
+            fprintf(wFile, "node00%lu:<n%lu_n>:e -> node00%lu:<n%lu_n>:w [ color = red; minlen=2; constraint=false; ]\n", i, i, data->array[i].next, data->array[i].next);
     }
 
     fprintf(wFile, "}");
-    printf("-----\n");
+    //printf("-----\n");
     fclose(wFile);
 
     char pngFile[100];
