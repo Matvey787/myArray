@@ -1,19 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <limits.h>
+
 #include "../h_files/structs.h"
 #include "../h_files/writeData.h"
 #include "../h_files/constants.h"
 
 #define MIN(a, b) (a) < (b) ? (a) : (b)
 #define MAX(a, b) (a) > (b) ? (a) : (b)
+size_t myMin(size_t a,size_t b){
+    return a < b ? a : b;
+}
 
-void writeData(data_t* data, const char* fileName, int numOfCall){
+void writeData(array_t* data){
     //printf("call %d\n", numOfCall);
     assert(data != nullptr);
-    assert(fileName != nullptr);
     
-    FILE* wFile = fopen(fileName, "wb");
+    FILE* wFile = fopen(data->fileName, "wb");
 
     if (wFile == nullptr)
     {
@@ -28,7 +32,7 @@ void writeData(data_t* data, const char* fileName, int numOfCall){
                     nodesep=0.75; \n\
                     ranksep=0.5;\n");
     data->head = 0;
-    data->tail = 100;
+    data->tail = INT_MAX;
     //printf("----%lu----\n", data->length);
     for (size_t i = 0; i < data->length; i++){
         //printf("%lu %lu %lg\n", data->tail, i+1, data->array[i].value);
@@ -46,22 +50,24 @@ void writeData(data_t* data, const char* fileName, int numOfCall){
         //printf("%lg %lu %lu\n", data->array[i].value, data->array[i].next, data->array[i].prev); 
     }
     
-    fprintf(wFile, "\n");
-    fprintf(wFile, "info [shape=Mrecord label= \" Info | freeCell: %lu | <info_h> HEAD: %lu | <info_t> TAIL: %lu \" ];\n",
-            data->freeCell, data->head, data->tail);
-    fprintf(wFile, "info:<info_h> -> node00%lu [ color = green; ]\n", data->head);
-    fprintf(wFile, "info:<info_t> -> node00%lu [ color = green; ]\n", data->tail);
-
+    if (data->head != 0 && data->tail != INT_MAX)
+    {
+        fprintf(wFile, "\n");
+        fprintf(wFile, "info [shape=Mrecord label= \" Info | freeCell: %lu | <info_h> HEAD: %lu | <info_t> TAIL: %lu \" ];\n",
+                data->freeCell, data->head, data->tail);
+        fprintf(wFile, "info:<info_h> -> node00%lu [ color = green; ]\n", data->head);
+        fprintf(wFile, "info:<info_t> -> node00%lu [ color = green; ]\n", data->tail);
+    }
     fprintf(wFile, "\n");
     for (size_t i = 0; i < data->length - 1; i++){
         
-        fprintf(wFile, "node00%lu -> node00%lu [ weight = 1; color = white; ]\n", i, i+1);
+        fprintf(wFile, "node00%lu -> node00%lu [ weight = 10; color = white; ]\n", i, i+1);
     }
 
     fprintf(wFile, "\n");
     for (size_t i = 0; i < data->length; i++){
         if ((data->array[i].value - c_poisonNum) > c_compareZero)
-            fprintf(wFile, "node00%lu:<n%lu_p>:w -> node00%lu:<n%lu_p>:s [ color = blue; minlen=2; constraint=false; ]\n", i, i, data->array[i].prev, data->array[i].prev);
+            fprintf(wFile, "node00%lu:<n%lu_p>:w -> node00%lu:<n%lu_p>:e [ color = blue; minlen=2; constraint=false; ]\n", i, i, data->array[i].prev, data->array[i].prev);
     }
 
     fprintf(wFile, "\n");
@@ -76,8 +82,9 @@ void writeData(data_t* data, const char* fileName, int numOfCall){
     //printf("-----\n");
     fclose(wFile);
 
+    // todo fix magic const
     char pngFile[200] = {0};
     const char* startOfName = "dot tree.dot -Tpng -o trees/tree";
-    sprintf(pngFile, "%s%d.png", startOfName, numOfCall++);
+    sprintf(pngFile, "%s%d.png", startOfName, data->numOfCallFunc++);
     system(pngFile);
 }

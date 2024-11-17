@@ -9,14 +9,16 @@ struct elem_t
     size_t prev;
 };
 
-struct data_t
+// todo list_t 
+struct array_t
 {
     elem_t* array;
     size_t length;
     size_t freeCell;
-    size_t usedCells;
     size_t head;
     size_t tail;
+    const char* fileName;
+    size_t numOfCallFunc;
 };
 
-#endif
+#endif // STRUCTS

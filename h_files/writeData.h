@@ -3,6 +3,6 @@
 #include <stdio.h>
 #include "structs.h"
 
-void writeData(data_t* data, const char* fileName, int numOfCall);
+void writeData(array_t* data);
 
-#endif
+#endif // WRITEDATA
